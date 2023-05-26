@@ -5,6 +5,9 @@ from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as Navigatio
 from os.path import expanduser
 
 import load_intermediate_slices
+import intensity_corrections_module
+import stitching_module
+import register_module
 	 
 class SBFPreprocess(QMainWindow):
 	
@@ -67,9 +70,23 @@ class SBFPreprocess(QMainWindow):
 		self.gamma = float(self.gammaValueLineEdit.text())
 		self.registerSlicesFlag = self.registerSlicesCheckBox.isChecked()
   
-		# Load intermediate slices
-		self.subsetVolume = load_intermediate_slices.load()
+		# Load intermediate slices 
+		# Output is in a list format - each element is the substack for a particular tile
+		self.subsetVolume = load_intermediate_slices.load(self.inputFolder, self.processEvery, self.tilesX, self.tilesY)
+  
+		# Intensity corrections
+		# Output is in a list format - each element is the substack for a particular tile
+		self.subsetVolume = intensity_corrections_module.correct(self.subsetVolume, self.correctIntensityVariationFlag, self.gamma)
+  
+		# Stitch slices
+		# Output is in a list format - single element, stitched output
+		if self.tilesX != 1 and self.tilesY != 1:
+			self.subsetVolume = stitching_module.stitch(self.stitchVolume)
 
+			# Register slices
+			if self.registerSlicesFlag:
+				self.subsetVolume = register_module.register(self.subsetVolume)
+   
 		# Update slider limits
 		self.xySlider.SetMaximum(self.subsetVolume.shape[2])
   
