@@ -71,17 +71,17 @@ class SBFPreprocess(QMainWindow):
 		self.registerSlicesFlag = self.registerSlicesCheckBox.isChecked()
   
 		# Load intermediate slices 
-		# Output is in a list format - each element is the substack for a particular tile
+		# Output is a list of 2D numpy arrays - [tile_1_slice_1, tile1_slice100... tileN_slice1, tileN_slice100,...]
 		self.subsetVolume = load_intermediate_slices.load(self.inputFolder, self.processEvery, self.tilesX, self.tilesY)
   
 		# Intensity corrections
-		# Output is in a list format - each element is the substack for a particular tile
+		# Output is a list of 2D numpy arrays - [tile_1_slice_1, tile1_slice100... tileN_slice1, tileN_slice100,...]
 		self.subsetVolume = intensity_corrections_module.correct(self.subsetVolume, self.correctIntensityVariationFlag, self.gamma)
   
 		# Stitch slices
 		# Output is in a list format - single element, stitched output
 		if self.tilesX != 1 and self.tilesY != 1:
-			self.subsetVolume = stitching_module.stitch(self.stitchVolume)
+			self.subsetVolume = stitching_module.stitch(self.subsetVolume)
 
 			# Register slices
 			if self.registerSlicesFlag:
