@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>792</width>
-    <height>617</height>
+    <width>1004</width>
+    <height>660</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -95,24 +95,49 @@
          </widget>
         </item>
         <item>
+         <widget class="QGroupBox" name="sliceEditingBox">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>20</width>
+            <height>85</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="title">
+           <string>Slice Editing Tools</string>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_6">
+           <item>
+            <widget class="QPushButton" name="deleteSliceFromStack">
+             <property name="text">
+              <string>Delete current slice from stack</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="pushButton">
+             <property name="text">
+              <string>Select slices for annotation</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
          <widget class="QGroupBox" name="annotationGroupBox">
           <property name="title">
            <string>Annotation tools</string>
           </property>
           <layout class="QGridLayout" name="gridLayout_3">
-           <item row="1" column="1">
-            <widget class="QSlider" name="radiusSlider">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-            </widget>
-           </item>
            <item row="0" column="1">
             <widget class="QPushButton" name="eraseToolButton">
              <property name="text">
@@ -124,6 +149,19 @@
             <widget class="QPushButton" name="penToolButton">
              <property name="text">
               <string>Pen Tool</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1">
+            <widget class="QSlider" name="radiusSlider">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
              </property>
             </widget>
            </item>
@@ -179,13 +217,6 @@
            </size>
           </property>
          </spacer>
-        </item>
-        <item>
-         <widget class="QPushButton" name="deleteSliceFromStack">
-          <property name="text">
-           <string>Delete current slice from stack</string>
-          </property>
-         </widget>
         </item>
        </layout>
       </widget>
@@ -465,7 +496,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>792</width>
+     <width>1004</width>
      <height>21</height>
     </rect>
    </property>
@@ -614,6 +645,70 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>sliceSlider</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>sliceSliderUpdate()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>613</x>
+     <y>610</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>395</x>
+     <y>308</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>sliceLineEdit</sender>
+   <signal>returnPressed()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>sliceEdit_changed()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>381</x>
+     <y>610</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>395</x>
+     <y>308</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>deleteSliceFromStack</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>deleteslice_button()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>254</x>
+     <y>195</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>300</x>
+     <y>481</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>slicesforannotate()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>270</x>
+     <y>237</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>302</x>
+     <y>224</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>openDataset()</slot>
@@ -624,5 +719,9 @@
   <slot>lowEdit()</slot>
   <slot>highEdit()</slot>
   <slot>gammaEdit()</slot>
+  <slot>sliceSliderUpdate()</slot>
+  <slot>sliceEdit_changed()</slot>
+  <slot>deleteslice_button()</slot>
+  <slot>slicesforannotate()</slot>
  </slots>
 </ui>
