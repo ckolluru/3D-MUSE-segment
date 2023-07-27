@@ -23,6 +23,7 @@ class MainWindow(QMainWindow):
 		self.intermediateSlices = None
 		self.zarr_file = None
 		self.img_stack = None
+		self.img_keep = []
 		self.img_delete = []
 		self.slice_to_annotate = None
 		self.annotate_stack = None
@@ -45,7 +46,7 @@ class MainWindow(QMainWindow):
 		# Overlay is the segmentation masks
 		# if overlay is not None:
 		# ...
-			
+
 	def openDataset(self):
 
 		title = "Open Zarr dataset directory"
@@ -62,6 +63,7 @@ class MainWindow(QMainWindow):
 		
 		# Display the first image of the stack
 		image = self.img_stack[0]
+		self.img_keep = list(range(0, len(self.img_stack)))
 		self.updatePlotWindow(image, overlay=None)
 
 		if self.zarr_file == '':
@@ -138,18 +140,25 @@ class MainWindow(QMainWindow):
 
 	def deleteslice_button(self):
 
-		if not self.img_delete:
+		if self.sliceSlider.value() not in self.img_delete:
 			self.img_delete.append(self.sliceSlider.value())
-
-		elif self.sliceSlider.value() not in self.img_delete:
-			self.img_delete.append(self.sliceSlider.value())
+			self.img_keep.remove(self.sliceSlider.value())
 
 		else:
 			msgBox = QMessageBox()
 			msgBox.setText("This slice has already been recorded for deletion")
 			msgBox.exec()
-		
-		print(self.img_delete)
+
+	def recoverslice(self):
+
+		if self.sliceSlider.value() not in self.img_keep:
+			self.img_keep.append(self.sliceSlider.value())
+			self.img_delete.remove(self.sliceSlider.value())
+
+		else:
+			msgBox = QMessageBox()
+			msgBox.setText("This slice is already in the Full Stack")
+			msgBox.exec()
 
 	def slicesforannotate(self):
 
@@ -173,16 +182,17 @@ class MainWindow(QMainWindow):
 				print("Number entered:", self.slice_to_annotate)
 
 				# Select the slices for annotation
-				if self.slice_to_annotate > len(self.img_stack):
+				if self.slice_to_annotate > len(self.img_keep):
 					# Cannot annotate more slices than are in the image stack
 					msgBox = QMessageBox()
 					msgBox.setText("This number exceeds the number of image slices available.")
 					msgBox.exec()
 				else:
 					# Create an annotation stack
-
-					self.annotate_stack = self.img_stack[np.linspace(0, len(self.img_stack)-1, self.slice_to_annotate, dtype = int)]
-					print(self.annotate_stack.shape)
+					keep_stack = self.img_stack[self.img_keep]
+					print(keep_stack.shape)
+					self.annotate_stack = keep_stack[np.linspace(0, len(self.img_keep)-1, self.slice_to_annotate, dtype = int)]
+					print(np.linspace(0, len(self.img_keep)-1, self.slice_to_annotate, dtype = int))
 					self.tabWidget_2.setCurrentIndex(1)
 					self.sliceSlider_2.setMaximum(len(self.annotate_stack)-1)
 					image = self.annotate_stack[0]
